@@ -7,5 +7,39 @@
 <body>
   <h1>Welcome to HOMEL 🚀</h1>
   <p>Social platform for sharing goals and connecting with like minds.</p>
-</body>
-</html>
+
+  <div id="auth">
+    <input type="email" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+    <button onclick="signUp()">Sign Up</button>
+    <button onclick="logIn()">Log In</button>
+    <button onclick="logOut()">Log Out</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC4tYN52_Z3qt7SZBzYcFzIntBxG20cmek",
+  authDomain: "homel-5324a.firebaseapp.com",
+  projectId: "homel-5324a",
+  storageBucket: "homel-5324a.firebasestorage.app",
+  messagingSenderId: "472568038538",
+  appId: "1:472568038538:web:f30022d86baa26b9f1d973"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
