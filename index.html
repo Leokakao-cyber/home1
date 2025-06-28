@@ -15,8 +15,84 @@
     <button onclick="logIn()">Log In</button>
     <button onclick="logOut()">Log Out</button>
   </div>
+<!-- DASHBOARD UI -->
+<div id="dashboard" style="
+  display: none;
+  font-family: 'Poppins', sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  color: #fff;
+  text-align: center;
+">
+  <h1 id="welcome-text">Welcome to HOMEL 👑</h1>
+  <p id="goal-count">You have 0 goals.</p>
 
-  <script type="module"> <!-- GOAL FORM -->
+  <div id="goal-list" style="margin-top: 30px;"></div>
+
+  <button onclick="logoutUser()" style="
+    margin-top: 30px;
+    padding: 12px 20px;
+    background: red;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  ">🚪 Logout</button>
+</div>
+import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script type="module"// Firebase imports
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "firebase/firestore";
+
+// Firebase config + init
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🚪 Logout
+function logoutUser() {
+  signOut(auth).then(() => {
+    location.reload();
+  });
+}
+
+// 💻 Dashboard logic
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("goal-form").style.display = "block";
+    document.getElementById("welcome-text").innerText = `Welcome, ${user.email}`;
+
+    const goalsRef = collection(db, "users", user.uid, "goals");
+    const snap = await getDocs(goalsRef);
+    const goalList = document.getElementById("goal-list");
+    const goalCount = document.getElementById("goal-count");
+
+    goalList.innerHTML = "";
+
+    snap.forEach(doc => {
+      const data = doc.data();
+      const goalItem = document.createElement("div");
+      goalItem.style = "margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;";
+      goalItem.innerHTML = `<h3>${data.title}</h3><p>${data.description}</p>`;
+      goalList.appendChild(goalItem);
+    });
+
+    goalCount.innerText = `You have ${snap.size} goal${snap.size !== 1 ? "s" : ""}.`;
+  }
+});> <!-- GOAL FORM -->
 <div id="goal-form" style="
   display: none;
   max-width: 400px;
