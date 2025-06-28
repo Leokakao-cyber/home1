@@ -22,7 +22,46 @@
   <input id="goal-title" type="text" placeholder="Goal Title" style="padding:10px; margin-bottom:10px;"><br>
   <textarea id="goal-desc" placeholder="Goal Description" style="padding:10px; margin-bottom:10px;"></textarea><br>
   <button onclick="saveGoal()">Save Goal</button>
-</div>
+</div>import {
+  getFirestore,
+  doc,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const db = getFirestore(app);
+
+// Show form if logged in
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById("goal-form").style.display = "block";
+  }
+});
+
+// Save goal to Firestore
+async function saveGoal() {
+  const title = document.getElementById("goal-title").value;
+  const desc = document.getElementById("goal-desc").value;
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("Not logged in");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "users", user.uid, "goals"), {
+      title: title,
+      description: desc,
+      timestamp: Date.now()
+    });
+    alert("Goal saved!");
+    document.getElementById("goal-title").value = "";
+    document.getElementById("goal-desc").value = "";
+  } catch (e) {
+    alert("Error saving goal.");
+  }
+}
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
