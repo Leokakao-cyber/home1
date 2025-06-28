@@ -4,207 +4,37 @@
   <title>HOMEL</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body style="background: #0f172a; color: white; font-family: sans-serif; padding: 20px;">
+
   <h1>Welcome to HOMEL 🚀</h1>
   <p>Social platform for sharing goals and connecting with like minds.</p>
 
+  <!-- AUTH UI -->
   <div id="auth">
     <input type="email" id="email" placeholder="Email"><br><br>
     <input type="password" id="password" placeholder="Password"><br><br>
     <button onclick="signUp()">Sign Up</button>
-    <button onclick="logIn()">Log In</button>
+    <button onclick="signIn()">Sign In</button>
     <button onclick="logOut()">Log Out</button>
   </div>
-<!-- DASHBOARD UI -->
-<div id="dashboard" style="
-  display: none;
-  font-family: 'Poppins', sans-serif;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 30px;
-  color: #fff;
-  text-align: center;
-">
-  <h1 id="welcome-text">Welcome to HOMEL 👑</h1>
-  <p id="goal-count">You have 0 goals.</p>
 
-  <div id="goal-list" style="margin-top: 30px;"></div>
+  <!-- DASHBOARD UI -->
+  <div id="dashboard" style="display: none;">
+    <h2 id="welcome-text">Welcome 👑</h2>
+    <p id="goal-count">You have 0 goals.</p>
+    <div id="goal-list" style="margin-top: 20px;"></div>
 
-  <button onclick="logoutUser()" style="
-    margin-top: 30px;
-    padding: 12px 20px;
-    background: red;
-    border: none;
-    color: white;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-  ">🚪 Logout</button>
-</div>
-import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  <script type="module"import {
-  getAuth,
-  signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    <!-- GOAL FORM -->
+    <div id="goal-form" style="margin-top: 30px;">
+      <input id="goal-title" type="text" placeholder="Goal Title"><br><br>
+      <textarea id="goal-desc" placeholder="Goal Description"></textarea><br><br>
+      <button onclick="saveGoal()">💾 Save Goal</button>
+    </div>
+  </div>
 
-const auth = getAuth(app);
-
-async function signInUser() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    console.log("Signed in:", userCredential.user);
-    location.reload(); // or redirect to dashboard
-  } catch (error) {
-    alert("❌ Sign in failed: " + error.message);
-    console.error(error);
-  }
-}// Firebase imports
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "firebase/auth";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs
-} from "firebase/firestore";
-
-// Firebase config + init
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// 🚪 Logout
-function logoutUser() {
-  signOut(auth).then(() => {
-    location.reload();
-  });
-}
-
-// 💻 Dashboard logic
-onAuthStateChanged(auth, async user => {
-  if (user) {
-    document.getElementById("dashboard").style.display = "block";
-    document.getElementById("goal-form").style.display = "block";
-    document.getElementById("welcome-text").innerText = `Welcome, ${user.email}`;
-
-    const goalsRef = collection(db, "users", user.uid, "goals");
-    const snap = await getDocs(goalsRef);
-    const goalList = document.getElementById("goal-list");
-    const goalCount = document.getElementById("goal-count");
-
-    goalList.innerHTML = "";
-
-    snap.forEach(doc => {
-      const data = doc.data();
-      const goalItem = document.createElement("div");
-      goalItem.style = "margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;";
-      goalItem.innerHTML = `<h3>${data.title}</h3><p>${data.description}</p>`;
-      goalList.appendChild(goalItem);
-    });
-
-    goalCount.innerText = `You have ${snap.size} goal${snap.size !== 1 ? "s" : ""}.`;
-  }
-});> <!-- GOAL FORM -->
-<div id="goal-form" style="
-  display: none;
-  max-width: 400px;
-  margin: 50px auto;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  font-family: 'Poppins', sans-serif;
-  color: #fff;
-  text-align: center;
-">
-  <h2 style="margin-bottom: 20px;">🎯 Add a Goal</h2>
-
-  <input id="goal-title" type="text" placeholder="Goal Title" style="
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 16px;
-  ">
-
-  <textarea id="goal-desc" placeholder="Goal Description" rows="4" style="
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 16px;
-    resize: none;
-  "></textarea>
-
-  <button onclick="saveGoal()" style="
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(to right, #00f260, #0575e6);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  ">💾 Save Goal</button>
-</div>
-</div>import {
-  getFirestore 
-  doc,
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const db = getFirestore(app);
-
-// Show form if logged in
-onAuthStateChanged(auth, user => {
-  if (user) {
-    document.getElementById("goal-form").style.display = "block";
-  }
-});
-
-// Save goal to Firestore
-async function saveGoal() {
-  const title = document.getElementById("goal-title").value;
-  const desc = document.getElementById("goal-desc").value;
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("Not logged in");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "users", user.uid, "goals"), {
-      title: title,
-      description: desc,
-      timestamp: Date.now()
-    });
-    alert("Goal saved!");
-    document.getElementById("goal-title").value = "";
-    document.getElementById("goal-desc").value = "";
-  } catch (e) {
-    alert("Error saving goal.");
-  }
-}
+  <!-- FIREBASE & APP SCRIPT -->
+  <script type="module">
+    // IMPORTS
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
@@ -213,21 +43,117 @@ async function saveGoal() {
       signOut,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      doc,
+      updateDoc,
+      deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    // CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4tYN52_Z3qt7SZBzYcFzIntBxG20cmek",
+      authDomain: "homel-5324a.firebaseapp.com",
+      projectId: "homel-5324a",
+      storageBucket: "homel-5324a.appspot.com",
+      messagingSenderId: "472568038538",
+      appId: "1:472568038538:web:f30022d86baa26b9f1d973"
+    };
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC4tYN52_Z3qt7SZBzYcFzIntBxG20cmek",
-  authDomain: "homel-5324a.firebaseapp.com",
-  projectId: "homel-5324a",
-  storageBucket: "homel-5324a.firebasestorage.app",
-  messagingSenderId: "472568038538",
-  appId: "1:472568038538:web:f30022d86baa26b9f1d973"
-};
+    // INIT
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+    // SIGN UP
+    async function signUp() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("✅ Signed up!");
+      } catch (e) {
+        alert("❌ Sign up failed: " + e.message);
+      }
+    }
+
+    // SIGN IN
+    async function signIn() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("✅ Signed in!");
+      } catch (e) {
+        alert("❌ Sign in failed: " + e.message);
+      }
+    }
+
+    // LOG OUT
+    function logOut() {
+      signOut(auth).then(() => location.reload());
+    }
+
+    // WHEN USER LOGGED IN
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("auth").style.display = "none";
+        document.getElementById("welcome-text").innerText = `Welcome, ${user.email}`;
+
+        const goalsRef = collection(db, "users", user.uid, "goals");
+        const snap = await getDocs(goalsRef);
+        const goalList = document.getElementById("goal-list");
+        const goalCount = document.getElementById("goal-count");
+        goalList.innerHTML = "";
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const goalItem = document.createElement("div");
+          goalItem.innerHTML = `
+            <h3>${data.title}</h3>
+            <p>${data.description}</p>
+            <button onclick="deleteGoal('${docSnap.id}')">🗑️ Delete</button>
+          `;
+          goalList.appendChild(goalItem);
+        });
+
+        goalCount.innerText = `You have ${snap.size} goal${snap.size !== 1 ? "s" : ""}.`;
+      }
+    });
+
+    // SAVE GOAL
+    async function saveGoal() {
+      const title = document.getElementById("goal-title").value;
+      const desc = document.getElementById("goal-desc").value;
+      const user = auth.currentUser;
+
+      if (!user) return alert("Not logged in");
+
+      try {
+        await addDoc(collection(db, "users", user.uid, "goals"), {
+          title,
+          description: desc,
+          timestamp: Date.now()
+        });
+        location.reload();
+      } catch (e) {
+        alert("Error saving goal.");
+      }
+    }
+
+    // DELETE GOAL
+    window.deleteGoal = async function(id) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const ref = doc(db, "users", user.uid, "goals", id);
+      await deleteDoc(ref);
+      location.reload();
+    }
+  </script>
+</body>
+</html>
