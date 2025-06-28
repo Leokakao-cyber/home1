@@ -16,7 +16,13 @@
     <button onclick="logOut()">Log Out</button>
   </div>
 
-  <script type="module">
+  <script type="module"><!-- GOAL FORM -->
+<div id="goal-form" style="display:none; margin-top: 30px;">
+  <h2>Add a Goal</h2>
+  <input id="goal-title" type="text" placeholder="Goal Title" style="padding:10px; margin-bottom:10px;"><br>
+  <textarea id="goal-desc" placeholder="Goal Description" style="padding:10px; margin-bottom:10px;"></textarea><br>
+  <button onclick="saveGoal()">Save Goal</button>
+</div>
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
