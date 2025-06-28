@@ -17,11 +17,59 @@
   </div>
 
   <script type="module"> <!-- GOAL FORM -->
-<div id="goal-form" style="display:none; margin-top: 30px;">
-  <h2>Add a Goal</h2>
-  <input id="goal-title" type="text" placeholder="Goal Title" style="padding:10px; margin-bottom:10px;"><br>
-  <textarea id="goal-desc" placeholder="Goal Description" style="padding:10px; margin-bottom:10px;"></textarea><br>
-  <button onclick="saveGoal()">Save Goal</button>
+<div id="goal-form" style="
+  display: none;
+  max-width: 400px;
+  margin: 50px auto;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  text-align: center;
+">
+  <h2 style="margin-bottom: 20px;">🎯 Add a Goal</h2>
+
+  <input id="goal-title" type="text" placeholder="Goal Title" style="
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 16px;
+  ">
+
+  <textarea id="goal-desc" placeholder="Goal Description" rows="4" style="
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 16px;
+    resize: none;
+  "></textarea>
+
+  <button onclick="saveGoal()" style="
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, #00f260, #0575e6);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  ">💾 Save Goal</button>
+</div>
 </div>import {
   getFirestore 
   doc,
