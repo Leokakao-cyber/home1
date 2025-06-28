@@ -42,7 +42,26 @@
   ">🚪 Logout</button>
 </div>
 import { getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  <script type="module"// Firebase imports
+  <script type="module"import {
+  getAuth,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const auth = getAuth(app);
+
+async function signInUser() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log("Signed in:", userCredential.user);
+    location.reload(); // or redirect to dashboard
+  } catch (error) {
+    alert("❌ Sign in failed: " + error.message);
+    console.error(error);
+  }
+}// Firebase imports
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
