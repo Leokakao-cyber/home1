@@ -57,7 +57,20 @@
   </div>
 
   <!-- FIREBASE + LOGIC -->
-  <script type="module">
+  <script type="module">async function signUp() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log("✅ Signed up:", userCredential.user);
+    // Redirect to dashboard
+    location.reload(); // or window.location.href = "/dashboard.html"; if you're using another page
+  } catch (error) {
+    alert("❌ Sign up failed: " + error.message);
+    console.error(error);
+  }
+}
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
