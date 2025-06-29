@@ -77,41 +77,41 @@
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-<a id="logout-link" href="index.html" style="display: none;"></a>
-    // ✅ Optionally add to Firestore
+
+    // OPTIONAL: Save extra data in Firestore
     await setDoc(doc(db, "users", user.uid), {
       email: user.email,
-      createdAt: Date.now()
+      joinedAt: Date.now()
     });
 
-    // 🟢 Trigger hidden link
+    // 🔁 Redirect to Dashboard
     document.getElementById("signup-link").click();
 
   } catch (error) {
     alert("❌ Sign-up failed: " + error.message);
   }
-}
-
-    async function signInUser() {
+}<a id="signup-link" href="dashboard.html" style="display: none;"></a>
+ async function signUp() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-    // 🔵 Trigger hidden link
-    document.getElementById("signin-link").click();
+    // OPTIONAL: Save extra data in Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      joinedAt: Date.now()
+    });
+
+    // 🔁 Redirect to Dashboard
+    document.getElementById("signup-link").click();
 
   } catch (error) {
-    if (error.code === "auth/user-not-found") {
-      alert("❌ Email not found. Please sign up.");
-    } else if (error.code === "auth/wrong-password") {
-      alert("❌ Wrong password. Try again.");
-    } else {
-      alert("❌ Error: " + error.message);
-    }
+    alert("❌ Sign-up failed: " + error.message);
   }
-}<a id="logout-link" href="index.html" style="display: none;"></a>
+} <a id="signin-link" href="dashboard.html" style="display: none;"></a>
 
 function logOut() {
   signOut(auth)
