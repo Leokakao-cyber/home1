@@ -9,15 +9,17 @@
   <h1>Welcome to HOMEL 🚀</h1>
   <p>Social platform for sharing goals and connecting with like minds.</p>
 
-  <!-- AUTH UI -->
-  <div id="auth">
-    <input type="email" id="email" placeholder="Email"><br><br>
-    <input type="password" id="password" placeholder="Password"><br><br>
-    <button onclick="signUp()">Sign Up</button>
-    <button onclick="signIn()">Sign In</button>
-    <button onclick="logOut()">Log Out</button>
-  </div>
+  <!-- Signup -->
+<a id="signup-link" href="dashboard.html" style="display: none;"></a>
+<button onclick="signUp()">Sign Up</button>
 
+<!-- Signin -->
+<a id="signin-link" href="dashboard.html" style="display: none;"></a>
+<button onclick="signInUser()">Sign In</button>
+
+<!-- Logout -->
+<a id="logout-link" href="index.html" style="display: none;"></a>
+<button onclick="logoutUser()">Log Out</button>
   <!-- DASHBOARD UI -->
   <div id="dashboard" style="display: none;">
     <h2 id="welcome-text">Welcome 👑</h2>
@@ -68,39 +70,58 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // SIGN UP
     async function signUp() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("✅ Signed up!");
-      } catch (e) {
-        alert("❌ Sign up failed: " + e.message);
-      }
-    }
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-    // SIGN IN
-    async function signIn() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("✅ Signed in!");
-      } catch (e) {
-        alert("❌ Sign in failed: " + e.message);
-      }
-    }
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+<a id="logout-link" href="index.html" style="display: none;"></a>
+    // ✅ Optionally add to Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      createdAt: Date.now()
+    });
 
-    // LOG OUT
-    function logOut() {
-      signOut(auth).then(() => location.reload());
-    }
+    // 🟢 Trigger hidden link
+    document.getElementById("signup-link").click();
 
-    // WHEN USER LOGGED IN
-    onAuthStateChanged(auth, async user => {
-      if (user) {
-        document.getElementById("dashboard").style.display = "block";
+  } catch (error) {
+    alert("❌ Sign-up failed: " + error.message);
+  }
+}
+
+    async function signInUser() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+
+    // 🔵 Trigger hidden link
+    document.getElementById("signin-link").click();
+
+  } catch (error) {
+    if (error.code === "auth/user-not-found") {
+      alert("❌ Email not found. Please sign up.");
+    } else if (error.code === "auth/wrong-password") {
+      alert("❌ Wrong password. Try again.");
+    } else {
+      alert("❌ Error: " + error.message);
+    }
+  }
+}<a id="logout-link" href="index.html" style="display: none;"></a>
+
+function logOut() {
+  signOut(auth)
+    .then(() => {<a id="logout-link" href="index.html" style="display: none;"></a>
+      document.getElementById("logout-link").click(); // redirects to homepage
+    })
+    .catch((error) => {
+      alert("Logout error: " + error.message);
+    });
+}            document.getElementById("dashboard").style.display = "block";
         document.getElementById("auth").style.display = "none";
         document.getElementById("welcome-text").innerText = `Welcome, ${user.email}`;
 
