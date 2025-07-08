@@ -1,92 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HOMEL</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      background: #0a0a0a;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      text-align: center;
-      padding: 30px;
-    }
-    input, textarea, button {
-      padding: 10px;
-      margin: 8px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
-    button {
-      background: #1e90ff;
-      color: white;
-      cursor: pointer;
-    }
-    #dashboard, #goal-form {
-      display: none;
-    }
-  </style>
+  <title>HOMEL - Sign In</title>
 </head>
-<body>
-  <h1>Welcome to HOMEL 🚀</h1>
-  <p>Social platform for sharing goals and connecting with like minds.</p>
+<body style="text-align:center; font-family:sans-serif; background:#111; color:white; padding:50px;">
+  <h1>Welcome to HOMEL 👑</h1>
+  <p>Share goals. Connect minds.</p>
 
-  <!-- AUTH FORM -->
-  <div id="auth">
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="signUp()">Sign Up</button>
-    <button onclick="logIn()">Sign In</button>
-    <button onclick="logOut()">Log Out</button>
-  </div>
+  <input id="email" type="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Password"><br><br>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard">
-    <h2 id="welcome-text">Welcome 👑</h2>
-    <p id="goal-count">You have 0 goals.</p>
-    <div id="goal-list"></div>
-  </div>
+  <button onclick="signUp()">Sign Up</button>
+  <button onclick="logIn()">Log In</button>
 
-  <!-- GOAL FORM -->
-  <div id="goal-form">
-    <input type="text" id="goal-title" placeholder="Goal Title"><br>
-    <textarea id="goal-desc" placeholder="Goal Description"></textarea><br>
-    <button onclick="saveGoal()">💾 Save Goal</button>
-  </div>
-
-  <!-- FIREBASE + LOGIC -->
-  <script type="module">async function signUp() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log("✅ Signed up:", userCredential.user);
-    // Redirect to dashboard
-    location.reload(); // or window.location.href = "/dashboard.html"; if you're using another page
-  } catch (error) {
-    alert("❌ Sign up failed: " + error.message);
-    console.error(error);
-  }
-}
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔐 CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyC4tYN52_Z3qt7SZBzYcFzIntBxG20cmek",
       authDomain: "homel-5324a.firebaseapp.com",
@@ -98,83 +32,26 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    // ✅ SIGN UP
     async function signUp() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       try {
         await createUserWithEmailAndPassword(auth, email, password);
-        alert("✅ Signed up!");
-      } catch (error) {
-        alert("❌ " + error.message);
+        window.location.href = "dashboard.html"; // 🔁 Redirect to dashboard
+      } catch (e) {
+        alert("❌ Sign up failed: " + e.message);
       }
     }
 
-    // 🔐 SIGN IN
     async function logIn() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("✅ Logged in!");
-      } catch (error) {
-        alert("❌ " + error.message);
-      }
-    }
-
-    // 🚪 LOG OUT
-    function logOut() {
-      signOut(auth).then(() => {
-        location.reload();
-      });
-    }
-
-    // 👑 WHEN USER LOGGED IN
-    onAuthStateChanged(auth, async user => {
-      if (user) {
-        document.getElementById("auth").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        document.getElementById("goal-form").style.display = "block";
-        document.getElementById("welcome-text").innerText = `Welcome, ${user.email}`;
-
-        const goalsRef = collection(db, "users", user.uid, "goals");
-        const snap = await getDocs(goalsRef);
-        const goalList = document.getElementById("goal-list");
-        const goalCount = document.getElementById("goal-count");
-
-        goalList.innerHTML = "";
-        snap.forEach(doc => {
-          const data = doc.data();
-          const item = document.createElement("div");
-          item.innerHTML = `<h4>${data.title}</h4><p>${data.description}</p><hr>`;
-          goalList.appendChild(item);
-        });
-
-        goalCount.innerText = `You have ${snap.size} goal${snap.size !== 1 ? "s" : ""}.`;
-      }
-    });
-
-    // ✍️ SAVE GOAL
-    async function saveGoal() {
-      const title = document.getElementById("goal-title").value;
-      const desc = document.getElementById("goal-desc").value;
-      const user = auth.currentUser;
-
-      if (!user) return alert("❌ Not logged in!");
-
-      try {
-        await addDoc(collection(db, "users", user.uid, "goals"), {
-          title: title,
-          description: desc,
-          timestamp: Date.now()
-        });
-        alert("✅ Goal Saved!");
-        location.reload();
+        window.location.href = "dashboard.html"; // 🔁 Redirect to dashboard
       } catch (e) {
-        alert("❌ Error saving goal.");
-        console.error(e);
+        alert("❌ Login failed: " + e.message);
       }
     }
   </script>
