@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard | HOMEL</title>
+</head>
+<body style="text-align:center; font-family:sans-serif; background:#111; color:white; padding:50px;">
+  <h1 id="welcome">Loading...</h1>
+  <p id="goal-count">⏳ Fetching goals...</p>
+  <div id="goal-list"></div>
+  <br>
+  <button onclick="logOut()">🚪 Log Out</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4tYN52_Z3qt7SZBzYcFzIntBxG20cmek",
+      authDomain: "homel-5324a.firebaseapp.com",
+      projectId: "homel-5324a",
+      storageBucket: "homel-5324a.appspot.com",
+      messagingSenderId: "472568038538",
+      appId: "1:472568038538:web:f30022d86baa26b9f1d973"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        alert("❌ Not signed in. Redirecting...");
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("welcome").innerText = `Welcome, ${user.email}`;
+        const goalsRef = collection(db, "users", user.uid, "goals");
+        const snap = await getDocs(goalsRef);
+        document.getElementById("goal-count").innerText = `🎯 You have ${snap.size} goal(s)`;
+        const list = document.getElementById("goal-list");
+        snap.forEach(doc => {
+          const g = doc.data();
+          const item = document.createElement("div");
+          item.innerHTML = `<strong>${g.title}</strong><br>${g.description}<br><br>`;
+          list.appendChild(item);
+        });
+      }
+    });
+
+    function logOut() {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    }
+  </script>
+</body>
+</html>
